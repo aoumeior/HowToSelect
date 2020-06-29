@@ -1,0 +1,2 @@
+# HowToSelect
+For Gao Kao
