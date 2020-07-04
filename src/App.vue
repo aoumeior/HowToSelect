@@ -1,32 +1,81 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-navigation-drawer
+      app
+      permanent
+      router
+      v-model="drawer"
+      :color="color"
+      :expand-on-hover="expandOnHover"
+      :mini-variant="miniVariant"
+      :right="right"
+      absolute
+      dark>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title class="title">你的高考</v-list-item-title>
+          <v-list-item-subtitle>信心、细心、耐心</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-divider></v-divider>
+
+      <v-list dense nav>
+        <v-list-item v-for="item in items" :key="item.title" link>
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <router-link tag="li" :to="item.router">
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </router-link>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <!-- Sizes your content based upon application components -->
+    <v-main>
+      <!-- Provides the application the proper gutter -->
+      <v-container>
+        <!-- If using vue-router -->
+        <router-view></router-view>
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<style scoped>
+li {
+  list-style-type: none;
 }
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+.router-link-active {
+  text-decoration: none;
 }
 </style>
+
+
+<script>
+export default {
+  name: "App",
+  data() {
+    return {
+      items: [
+        { title: "分数选大学", icon: "mdi-view-dashboard", router: "about" },
+        { title: "位次选大学", icon: "mdi-image", router: "/" }
+        // { title: "About", icon: "mdi-help-box" }
+      ],
+      right: false,
+      drawer: true,
+      color: "#7a7374",
+      colors: ["primary", "blue", "success", "red", "teal"],
+      permanent: true,
+      miniVariant: false,
+      expandOnHover: false,
+      background: false
+    };
+  },
+  components: {
+  }
+};
+</script>
