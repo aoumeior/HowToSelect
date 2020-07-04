@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
 import Test from '../views/Test.vue'
+import { test } from 'mocha';
 
 Vue.use(VueRouter)
 
@@ -9,7 +10,7 @@ Vue.use(VueRouter)
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Test
   },
   {
     path: '/about',
