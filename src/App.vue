@@ -10,8 +10,7 @@
       :mini-variant="miniVariant"
       :right="right"
       absolute
-      dark
-    >
+      dark>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title">你的高考</v-list-item-title>
@@ -77,9 +76,6 @@ export default {
     };
   },
   components: {
-    // CoreAppBar: () => import('@/components/core/AppBar'),
-    // CoreFooter: () => import('@/components/core/Footer'),
-    // CoreView: () => import('@/components/core/View'),
   }
 };
 </script>
