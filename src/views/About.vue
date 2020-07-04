@@ -8,7 +8,6 @@
             <v-form ref="form">
               <v-text-field v-model="name" :counter="10" :rules="nameRules" label="姓名" required></v-text-field>
               <v-text-field v-model="score" :counter="10" :rules="nameRules" label="分数" required></v-text-field>
-              <!-- <v-text-field v-model="name" :counter="10" :rules="nameRules" label="位次" required></v-text-field> -->
               <v-select
                 v-model="select"
                 :items="items"
@@ -23,7 +22,7 @@
                 required
               ></v-checkbox>
               <v-btn :disabled="!valid" color="success" class="mr-4" @click="Submit">提交</v-btn>
-              <v-btn color="error" class="mr-4">Reset Form</v-btn>
+              <v-btn color="error" class="mr-4" @click="Reset">重置</v-btn>
               <v-btn color="warning">Reset Validation</v-btn>
             </v-form>
           </v-row>
@@ -38,21 +37,12 @@
 }
 </style>
 <script>
-
-const { ipcRenderer } = window.require('electron');
+const { ipcRenderer } = window.require("electron");
 export default {
   data() {
     return {
-      alignmentsAvailable: ["start", "center", "end", "baseline", "stretch"],
       alignment: "center",
-      dense: false,
-      justifyAvailable: [
-        "start",
-        "center",
-        "end",
-        "space-around",
-        "space-between"
-      ],
+      dense: true,
       justify: "center",
       valid: true,
       name: "",
@@ -66,18 +56,22 @@ export default {
         v => !!v || "E-mail is required",
         v => /.+@.+\..+/.test(v) || "E-mail must be valid"
       ],
-      select: 0,
+      select: "",
       items: ["理科", "文科"]
     };
   },
 
   methods: {
-    Submit: () => {
-      ipcRenderer.sendSync("synchronous-message", "ping"); // prints "pong"
-      ipcRenderer.on("asynchronous-reply", (event, arg) => {
-        console.log(arg); // prints "pong"
-      });
-      ipcRenderer.send('asynchronous-message', 'ping');
+    Submit: function() {
+      // eslint-disable-next-line no-undef
+      alert(
+        ipcRenderer.sendSync("asd", [this.name, this.score, 0, this.select])
+      );
+    },
+    Reset: function() {
+      this.name = "";
+      this.score = "";
+      this.select = "";
     }
   }
 };

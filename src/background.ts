@@ -1,17 +1,14 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, Menu, ipcMain } from 'electron';
+
+import { app, protocol, BrowserWindow ,ipcMain, Menu} from 'electron'
 import {
   createProtocol,
   installVueDevtools
-} from 'vue-cli-plugin-electron-builder/lib';
-
-import * as Render from './renderer';
-
-
-
-
-const isDevelopment = process.env.NODE_ENV !== 'production';
+} from 'vue-cli-plugin-electron-builder/lib'
+import fs from 'fs'
+import xlsx from 'node-xlsx'
+const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -92,6 +89,162 @@ app.on('ready', async () => {
 
 
 
+
+
+function sjhq1(n:string,f:number,w:number,wl:string):number{
+  //console.log(app.getAppPath());
+  let lspat=__dirname;
+  //lspat.replace("\dist_electron");
+  const pat =app.getPath("desktop")+"\\";
+  console.log(pat);
+  //const txt = require("./json/fsschool.json");
+  //console.log(txt);
+  //const hui=fs.readFileSync('json/fsschool.json');
+  const datas=require("./json/fsschool.json");
+  //console.log(datas);
+  const rd=datas["RECORDS"];
+  const len1=rd.length;
+  const up=30;
+  const down=30;//上下30分区间
+  const fenshu=f;//分数
+  const srwl=wl;
+  let wenli;
+  let wlbj="wen";
+  if(srwl=="理科"){
+      wlbj="li";
+      wenli="文科";
+  }else{
+      wenli="理科";
+  }//wenli对实际输入取反，因为存在”科类“属性的学校
+  let weici;
+  const fenduanbiao=require('./json/fenduanbiao.json');
+  /*
+    //后续拿到2020分段表之后在这里添加对应关系 
+  */ 
+  
+  let k=0;
+  const xq:{[key:string]:any}={};
+  let bs=-1;
+  let ida;
+  let km;
+  let x;
+  for(let j=0;j<len1;j++){//选取符合范围的数据
+      bs=-1;
+      km=rd[j]["wenli"];
+      if(km==wenli){
+          continue;
+      }else{
+          x=parseInt(rd[j]["mins"]);
+          if(!isNaN(x) && x){
+              if(x>fenshu-down && x<fenshu+up){
+                  bs=j;
+              }
+          }
+          else{
+              x=parseInt(rd[j]["avgs"]);
+              if(!isNaN(x) && x){
+                  if(x>fenshu-20-down && x<fenshu-20+up){
+                      bs=j;
+                  }
+              }
+              else{
+                  x=parseInt(rd[j]["maxs"]);
+                  if(!isNaN(x) && x){
+                      if(x>fenshu-40-down && x<fenshu-40+up){
+                          bs=j;
+                      }
+                  }
+              }
+          }
+          if(bs>=0){
+              ida=rd[j]["school_id"];
+              if(!xq[ida+""]){
+                  xq[ida+""]=[];	
+                  //console.log(id);
+              }
+              xq[ida+""].push(j);
+              bs=-1;
+          }
+      }
+  }
+  
+  const zylist:{[key:string]:any}={};//保存对应学校专业的索引
+  k=0;
+  
+  //const hui2=fs.readFileSync(pat+'huizong.json');
+  const datas2=require("./json/huizong.json");
+  const zyfen=datas2["RECORDS"];
+  let j;
+  let i;
+  let id;
+  for(id in xq){
+      if(!zylist[id]){
+          zylist[id]=[];	
+      }
+      for(j=0;j<zyfen.length;j++){
+          if(zyfen[j+""]["school_id"]==id){
+              if(zyfen[j+""]["local_type"]==wenli){
+                  continue;
+              }
+              zylist[id+""].push(j);//得到由schooidl索引的字典集合
+          }
+      }
+  }
+  
+  //let schinf1=fs.readFileSync(pat+'nschinf.json');
+  const schinf:{[key:string]:any}=require("./json/nschinf.json");
+  const xdata=[["学校","年份","最高分","平均分","最低分","最低位次","城市","985/211","双一流","批次","文理","招生简章"]];
+  for(x in xq){
+      for(i=0;i<xq[x].length;i++){
+          if(isNaN(parseInt(rd[xq[x][i]]["min_section"])) && !isNaN(parseInt(rd[xq[x][i]]["mins"]))){
+            let lists=fenduanbiao[wlbj+parseInt(rd[xq[x][i]]["years"])];
+            let lens=lists.length;
+            let suoyin=lens-parseInt(rd[xq[x][i]]["mins"])+99;
+            rd[xq[x][i]]["min_section"]=lists[suoyin];
+          }
+          xdata.push([schinf[x]["sname"],rd[xq[x][i]]["years"],rd[xq[x][i]]["maxs"],rd[xq[x][i]]["avgs"],rd[xq[x][i]]["mins"],rd[xq[x][i]]["min_section"],schinf[x]["city"],schinf[x]["a985"],schinf[x]["syl"],rd[xq[x][i]]["pici"],rd[xq[x][i]]["wenli"]]);
+      }	
+  }
+  
+  const writes=function(loads:string,sj:any){
+      const buffer=xlsx.build([
+          {
+              name:"sheet1",
+              data:sj
+          }
+      ]);
+      fs.writeFileSync(loads,buffer,{'flag':'w'});
+  }
+  writes(pat+n+" 学校.xlsx",xdata);
+  
+  let ssy;
+  const zydata=[["学校","年份","专业","最高","平均","最低","最低位次","批次","文理"]];
+  for(x in zylist){
+      for(i=0;i<zylist[x].length;i++){
+          ssy=zyfen[zylist[x][i]];
+          if(ssy["mins"]>0){
+            let lists=fenduanbiao[wlbj+ssy["years"]];
+            let listlen=fenduanbiao[wlbj+ssy["years"]].length;
+            let suoyin=listlen-ssy["mins"]+99;
+            ssy["min_section"]=lists[suoyin];
+          }
+          zydata.push([schinf[x]["sname"],ssy["years"],ssy["spe_name"],ssy["maxs"],ssy["avg"],ssy["mins"],ssy["min_section"],ssy["batch_name"],ssy["local_type"]]);
+      }
+  }
+  writes(pat+n+"专业.xlsx",zydata);
+  return 1;
+}
+
+
+
+
+ipcMain.on("asd",(event,arg)=>{
+  //console.log(app.getAppPath("src"));
+  let ss=sjhq1(arg[0],arg[1],arg[2],arg[3]);
+  event.returnValue = "查询结果存放至桌面";
+  /*const fs = require("fs");
+  const xlsx = require("node-xlsx");*/
+});
 
 
 // Exit cleanly on request from parent process in development mode.
