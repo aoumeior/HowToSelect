@@ -238,7 +238,7 @@ function sjhq1(n:string,f:number,w:number,wl:string):number{
 
 
 
-ipcMain.on("asd",(event,arg)=>{
+ipcMain.on("student_status",(event,arg)=>{
   //console.log(app.getAppPath("src"));
   let ss=sjhq1(arg[0],arg[1],arg[2],arg[3]);
   event.returnValue = "查询结果存放至桌面";

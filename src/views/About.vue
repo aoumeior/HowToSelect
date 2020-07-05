@@ -28,6 +28,19 @@
           </v-row>
         </v-col>
       </v-row>
+      <v-progress-linear
+        v-if="IsProgressShow"
+        v-model="valueDeterminate"
+        :buffer-value="bufferValue"
+        color="deep-purple accent-4"
+      />
+
+      <v-snackbar v-model="Snackbar" :timeout="timeout">
+        {{ text }}
+        <template v-slot:action="{ attrs }">
+          <v-btn color="blue" text v-bind="attrs" @click="Snackbar = false">Close</v-btn>
+        </template>
+      </v-snackbar>
     </v-container>
   </div>
 </template>
@@ -41,12 +54,17 @@ const { ipcRenderer } = window.require("electron");
 export default {
   data() {
     return {
+      Snackbar: false,
+      text: "数据已保存桌面",
+      timeout: 2000,
+      valueDeterminate: 0, // for progress
       alignment: "center",
       dense: true,
       justify: "center",
       valid: true,
       name: "",
       score: "",
+      IsProgressShow: false,
       nameRules: [
         v => !!v || "Name is required",
         v => (v && v.length <= 10) || "Name must be less than 10 characters"
@@ -57,21 +75,59 @@ export default {
         v => /.+@.+\..+/.test(v) || "E-mail must be valid"
       ],
       select: "",
-      items: ["理科", "文科"]
+      items: ["理科", "文科"],
+      bufferValue: 20,
+      interval: 0,
+      interval1:0
     };
   },
+  watch: {
+    value(val) {
+      if (val < 100) return;
 
+      this.value = 0;
+      this.bufferValue = 10; 
+    }
+  },
+
+  mounted() {
+    this.startBuffer();
+  },
+
+  beforeDestroy() {
+    clearInterval(this.interval);
+  },
   methods: {
     Submit: function() {
-      // eslint-disable-next-line no-undef
-      alert(
-        ipcRenderer.sendSync("asd", [this.name, this.score, 0, this.select])
-      );
+      this.startBuffer();
+      this.IsProgressShow = true;
+      const result = ipcRenderer.sendSync("student_status", [
+        this.name,
+        this.score,
+        0,
+        this.select
+      ]);
+      this.Snackbar = true;
+      clearInterval(this.interval1);
+      this.interval1 = setInterval(() => {
+        this.value = 0;
+        this.bufferValue = 0;
+        this.IsProgressShow = false;
+        this.Snackbar = false;
+        this.beforeDestroy();
+      }, 2000);
     },
     Reset: function() {
       this.name = "";
       this.score = "";
       this.select = "";
+    },
+    startBuffer() {
+      clearInterval(this.interval);
+      this.interval = setInterval(() => {
+        this.value += Math.random() * (15 - 5) + 5;
+        this.bufferValue += Math.random() * (15 - 5) + 6;
+      }, 500);
     }
   }
 };

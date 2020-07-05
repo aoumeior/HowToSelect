@@ -7,9 +7,6 @@ import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false;
 
-declare global {
-  interface Window { require: any }
-}
 
 new Vue({
   router,
