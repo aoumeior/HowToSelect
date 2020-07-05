@@ -136,7 +136,7 @@ function sjhq1(n:string,f:number,w:number,wl:string):number{
       }else{
           x=parseInt(rd[j]["mins"]);
           if(!isNaN(x) && x){
-              if(x>fenshu-down && x<fenshu+up){
+              if(x>fenshu-down && x<fenshu-0+up){
                   bs=j;
               }
           }
@@ -167,7 +167,10 @@ function sjhq1(n:string,f:number,w:number,wl:string):number{
           }
       }
   }
-  
+  for(let ms in xq){//按年份排序
+    xq[ms].sort((a:string,b:string)=>rd[b]["years"]-rd[a]["years"]);
+  }
+
   const zylist:{[key:string]:any}={};//保存对应学校专业的索引
   k=0;
   
@@ -191,9 +194,13 @@ function sjhq1(n:string,f:number,w:number,wl:string):number{
       }
   }
   
+  for(let mss in zylist){//按年份排序
+    zylist[mss].sort((a:string,b:string)=>zyfen[b]["mins"]-zyfen[a]["mins"]);
+    zylist[mss].sort((a:string,b:string)=>zyfen[b]["years"]-zyfen[a]["years"]);
+  }
   //let schinf1=fs.readFileSync(pat+'nschinf.json');
   const schinf:{[key:string]:any}=require("./json/nschinf.json");
-  const xdata=[["学校","年份","最高分","平均分","最低分","最低位次","城市","985/211","双一流","批次","文理","招生简章"]];
+  const xdata=[["学校","年份","最高分","平均分","最低分","最低位次","城市","985/211","双一流","公办/民办","批次","文理","招生简章"]];
   for(x in xq){
       for(i=0;i<xq[x].length;i++){
           if(isNaN(parseInt(rd[xq[x][i]]["min_section"])) && !isNaN(parseInt(rd[xq[x][i]]["mins"]))){
@@ -202,7 +209,7 @@ function sjhq1(n:string,f:number,w:number,wl:string):number{
             let suoyin=lens-parseInt(rd[xq[x][i]]["mins"])+99;
             rd[xq[x][i]]["min_section"]=lists[suoyin];
           }
-          xdata.push([schinf[x]["sname"],rd[xq[x][i]]["years"],rd[xq[x][i]]["maxs"],rd[xq[x][i]]["avgs"],rd[xq[x][i]]["mins"],rd[xq[x][i]]["min_section"],schinf[x]["city"],schinf[x]["a985"],schinf[x]["syl"],rd[xq[x][i]]["pici"],rd[xq[x][i]]["wenli"]]);
+          xdata.push([schinf[x]["sname"],rd[xq[x][i]]["years"],rd[xq[x][i]]["maxs"],rd[xq[x][i]]["avgs"],rd[xq[x][i]]["mins"],rd[xq[x][i]]["min_section"],schinf[x]["city"],schinf[x]["a985"],schinf[x]["syl"],schinf[x]["school_nature"],rd[xq[x][i]]["pici"],rd[xq[x][i]]["wenli"]]);
       }	
   }
   
