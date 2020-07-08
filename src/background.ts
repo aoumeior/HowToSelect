@@ -9,7 +9,63 @@ import {
 import fs from 'fs'
 import xlsx from 'node-xlsx'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+let pingce:Array<Array<any>>=[];
+function readdirs(ljs:string){
+  const fs = require("fs");
+  const path = require('path');
+  const xlsx = require("node-xlsx");
+  var filePath1 = path.resolve(ljs);
+  let tt:Array<Array<any>>=[];
+  let ss:Array<Array<any>>=[];
+  var ls:Array<{[key:string]:any}>;
+  let files = fs.readdirSync(filePath1);
+  for(var i=0;i<files.length;i++){
+    ls=xlsx.parse(ljs+files[i]);
+    tt=ls[0]["data"];
+    tt.splice(0,1);
+    ss=ss.concat(tt);
+  }
+  return ss;
+}
 
+let jiliang=0;
+const lj='./public/excel/';
+const lj1=lj+'schoolf/';
+const lj2=lj+'zyf/';
+const lj3=lj+'zsjz/';
+let rd:Array<Array<any>>=[];
+let zyfen:Array<Array<any>>=[];
+let zsjz:Array<Array<any>>=[];
+const reads=function(ljs:string,lis:number){
+  const fs = require("fs");
+  const path = require('path');
+  const xlsx = require("node-xlsx");
+  var ls:Array<{[key:string]:any}>;
+  var filePath1 = path.resolve(ljs);
+  let tt:Array<Array<any>>=[];
+  let ss:Array<Array<any>>=[];
+  fs.readdir(filePath1,function(err:string,files:Array<any>){
+    for(var i=0;i<files.length;i++){
+      ls=xlsx.parse(ljs+files[i]);
+      tt=ls[0]["data"];
+      //tt.splice(0,1);
+      ss=ss.concat(tt);
+    }
+    switch(lis){
+      case 1:rd=ss;break;
+      case 2:zyfen=ss;break;
+      case 3:zsjz=ss;break;
+    }
+    jiliang++;
+  });
+}
+
+function pinggu(){
+  pingce=readdirs("./public/excel/pinggu/");
+  reads(lj1,1);
+  reads(lj2,2);
+  reads(lj3,3);
+}
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win: BrowserWindow | null;
@@ -44,6 +100,7 @@ function createWindow() {
   win.on('closed', () => {
     win = null;
   });
+  pinggu();
 }
 
 // Quit when all windows are closed.
@@ -87,25 +144,26 @@ app.on('ready', async () => {
 });
 
 
-
-
-
-
-function sjhq1(n:string,f:number,w:number,wl:string):number{
-  //console.log(app.getAppPath());
-  let lspat=__dirname;
-  //lspat.replace("\dist_electron");
+function sjhq2(n:string,f:number,w:number,wl:string):number{
+  const fs = require("fs");
+  const path = require('path');
+  const xlsx = require("node-xlsx");
+  const fenduanbiao=require('./json/fenduanbiao.json');
+  
   const pat =app.getPath("desktop")+"\\";
-  console.log(pat);
-  //const txt = require("./json/fsschool.json");
-  //console.log(txt);
-  //const hui=fs.readFileSync('json/fsschool.json');
-  const datas=require("./json/fsschool.json");
-  //console.log(datas);
-  const rd=datas["RECORDS"];
-  const len1=rd.length;
+  while(jiliang<3){
+    
+  }
+  //把所有数据读取，得到三个二维数组
+  const jz:{[key:string]:any}={};
+  for(let iii=0;iii<zsjz.length;iii++){
+    jz[zsjz[iii][0]]=zsjz[iii][1];
+  }
+  //console.log(jz);
   const up=30;
-  const down=30;//上下30分区间
+  const down=30;
+  const wcup=1000;
+  const wcdown=1000;
   const fenshu=f;//分数
   const srwl=wl;
   let wenli;
@@ -116,39 +174,40 @@ function sjhq1(n:string,f:number,w:number,wl:string):number{
   }else{
       wenli="理科";
   }//wenli对实际输入取反，因为存在”科类“属性的学校
-  let weici;
-  const fenduanbiao=require('./json/fenduanbiao.json');
-  /*
-    //后续拿到2020分段表之后在这里添加对应关系 
-  */ 
-  
   let k=0;
   const xq:{[key:string]:any}={};
   let bs=-1;
   let ida;
   let km;
   let x;
-  for(let j=0;j<len1;j++){//选取符合范围的数据
+  //学校分数:[school_name,years,mins,avgs,maxs,min_section,leixing,batch_name,local_type]
+  for(let j=0;j<rd.length;j++){//选取符合范围的数据
       bs=-1;
-      km=rd[j]["wenli"];
+      km=rd[j][8];
       if(km==wenli){
           continue;
       }else{
-          x=parseInt(rd[j]["mins"]);
+        x=parseInt(rd[j][5]);
+        if(!isNaN(x) && x && w>0){
+          if(x>w-wcdown && x<w-0+wcup){
+            bs=j;
+          }
+        }else{
+          x=parseInt(rd[j][2]);
           if(!isNaN(x) && x){
               if(x>fenshu-down && x<fenshu-0+up){
                   bs=j;
               }
           }
           else{
-              x=parseInt(rd[j]["avgs"]);
+              x=parseInt(rd[j][3]);
               if(!isNaN(x) && x){
                   if(x>fenshu-20-down && x<fenshu-20+up){
                       bs=j;
                   }
               }
               else{
-                  x=parseInt(rd[j]["maxs"]);
+                  x=parseInt(rd[j][4]);
                   if(!isNaN(x) && x){
                       if(x>fenshu-40-down && x<fenshu-40+up){
                           bs=j;
@@ -156,27 +215,39 @@ function sjhq1(n:string,f:number,w:number,wl:string):number{
                   }
               }
           }
-          if(bs>=0){
-              ida=rd[j]["school_id"];
-              if(!xq[ida+""]){
-                  xq[ida+""]=[];	
-                  //console.log(id);
-              }
-              xq[ida+""].push(j);
-              bs=-1;
+        }
+          
+        if(bs>=0){
+          ida=rd[j][0];
+          if(!xq[ida]){
+              xq[ida]=[];	
+              //console.log(id);
           }
+          //xq[ida].push(j);
+          bs=-1;
+        }
       }
   }
-  for(let ms in xq){//按年份排序
-    xq[ms].sort((a:string,b:string)=>rd[b]["years"]-rd[a]["years"]);
+  for(let mp in xq){
+    for(let cc in rd){
+      if(mp==rd[cc][0] && rd[cc][8]!=wenli){
+        xq[mp].push(cc);
+      }
+    }
   }
 
+
+  let sfsy:Array<any>=[];
+  for(let ms in xq){//按年份排序
+    xq[ms].sort((a:number,b:number)=>rd[b][2]-rd[a][2]);
+    xq[ms].sort((a:number,b:number)=>rd[b][1]-rd[a][1]);
+    sfsy.push(ms);
+  }
+  //建立关于学校列表学校和分数的对应关系索引，进行学校排序
+  sfsy.sort((a:string,b:string)=>rd[xq[a][0]][5]-rd[xq[b][0]][5]);
+  //专业分数:school_name	years	batch_name	mins	avgs	maxs	min_section	local_type	s_name
+
   const zylist:{[key:string]:any}={};//保存对应学校专业的索引
-  k=0;
-  
-  //const hui2=fs.readFileSync(pat+'huizong.json');
-  const datas2=require("./json/huizong.json");
-  const zyfen=datas2["RECORDS"];
   let j;
   let i;
   let id;
@@ -185,31 +256,36 @@ function sjhq1(n:string,f:number,w:number,wl:string):number{
           zylist[id]=[];	
       }
       for(j=0;j<zyfen.length;j++){
-          if(zyfen[j+""]["school_id"]==id){
-              if(zyfen[j+""]["local_type"]==wenli){
+          if(zyfen[j][0]==id){
+              if(zyfen[j][7]==wenli){
                   continue;
               }
-              zylist[id+""].push(j);//得到由schooidl索引的字典集合
+              zylist[id].push(j);//得到由schooidl索引的字典集合
           }
       }
   }
   
   for(let mss in zylist){//按年份排序
-    zylist[mss].sort((a:string,b:string)=>zyfen[b]["mins"]-zyfen[a]["mins"]);
-    zylist[mss].sort((a:string,b:string)=>zyfen[b]["years"]-zyfen[a]["years"]);
+    zylist[mss].sort((a:number,b:number)=>zyfen[b][3]-zyfen[a][3]);
+    zylist[mss].sort((a:number,b:number)=>zyfen[b][1]-zyfen[a][1]);
   }
   //let schinf1=fs.readFileSync(pat+'nschinf.json');
-  const schinf:{[key:string]:any}=require("./json/nschinf.json");
+  const schinf:{[key:string]:any}=require("./json/n.json");
   const xdata=[["学校","年份","最高分","平均分","最低分","最低位次","城市","985/211","双一流","公办/民办","批次","文理","招生简章"]];
-  for(x in xq){
-      for(i=0;i<xq[x].length;i++){
-          if(isNaN(parseInt(rd[xq[x][i]]["min_section"])) && !isNaN(parseInt(rd[xq[x][i]]["mins"]))){
-            let lists=fenduanbiao[wlbj+parseInt(rd[xq[x][i]]["years"])];
-            let lens=lists.length;
-            let suoyin=lens-parseInt(rd[xq[x][i]]["mins"])+99;
-            rd[xq[x][i]]["min_section"]=lists[suoyin];
+  for(x in sfsy){
+      for(i=0;i<xq[sfsy[x]].length;i++){
+          let s985="-";
+          let city="-";
+          let syl="-";
+          let sn="-";
+          if(schinf[sfsy[x]]){
+            s985=schinf[sfsy[x]]['a985'];
+            city=schinf[sfsy[x]]['city'];
+            syl=schinf[sfsy[x]]['syl'];
+            sn=schinf[sfsy[x]]['school_nature'];
           }
-          xdata.push([schinf[x]["sname"],rd[xq[x][i]]["years"],rd[xq[x][i]]["maxs"],rd[xq[x][i]]["avgs"],rd[xq[x][i]]["mins"],rd[xq[x][i]]["min_section"],schinf[x]["city"],schinf[x]["a985"],schinf[x]["syl"],schinf[x]["school_nature"],rd[xq[x][i]]["pici"],rd[xq[x][i]]["wenli"]]);
+          let tts=rd[xq[sfsy[x]][i]];
+          xdata.push([sfsy[x],tts[1],tts[4],tts[3],tts[2],tts[5],city,s985,syl,sn,tts[7],tts[8],jz[sfsy[x]]]);
       }	
   }
   
@@ -222,20 +298,15 @@ function sjhq1(n:string,f:number,w:number,wl:string):number{
       ]);
       fs.writeFileSync(loads,buffer,{'flag':'w'});
   }
+  
   writes(pat+n+" 学校.xlsx",xdata);
   
   let ssy;
   const zydata=[["学校","年份","专业","最高","平均","最低","最低位次","批次","文理"]];
-  for(x in zylist){
-      for(i=0;i<zylist[x].length;i++){
-          ssy=zyfen[zylist[x][i]];
-          if(ssy["mins"]>0){
-            let lists=fenduanbiao[wlbj+ssy["years"]];
-            let listlen=fenduanbiao[wlbj+ssy["years"]].length;
-            let suoyin=listlen-ssy["mins"]+99;
-            ssy["min_section"]=lists[suoyin];
-          }
-          zydata.push([schinf[x]["sname"],ssy["years"],ssy["spe_name"],ssy["maxs"],ssy["avg"],ssy["mins"],ssy["min_section"],ssy["batch_name"],ssy["local_type"]]);
+  for(x in sfsy){
+      for(i=0;i<zylist[sfsy[x]].length;i++){
+          ssy=zyfen[zylist[sfsy[x]][i]];
+          zydata.push([sfsy[x],ssy[1],ssy[8],ssy[5],ssy[4],ssy[3],ssy[6],ssy[2],ssy[7]]);
       }
   }
   writes(pat+n+"专业.xlsx",zydata);
@@ -244,15 +315,67 @@ function sjhq1(n:string,f:number,w:number,wl:string):number{
 
 
 
-
 ipcMain.on("student_status",(event,arg)=>{
   //console.log(app.getAppPath("src"));
-  let ss=sjhq1(arg[0],arg[1],arg[2],arg[3]);
+  let ss=sjhq2(arg[0],arg[1],arg[2],arg[3]);
   event.returnValue = "查询结果存放至桌面";
   /*const fs = require("fs");
   const xlsx = require("node-xlsx");*/
 });
 
+ipcMain.on("school_check",(event,arg)=>{//查询该学校是否在pingce当中
+  console.log(arg);
+  //console.log(pingce);
+  let ret:Array<any>=[];
+  const cx=function(a:string){
+    let i=0;
+    for(;i<ret.length;i++){
+      if(a==ret[i]['message']){
+        return false;
+      }
+    }
+    return true;
+  }
+  //let x:Array<any>=[];
+  let x=0;
+  for(;x<pingce.length;x++){
+    if(pingce[x][4].indexOf(arg[0])>=0 && cx(pingce[x][4])){
+      ret.push({message:pingce[x][4]});
+    }
+  }
+  console.log(ret);
+  event.returnValue = ret;
+  /*const fs = require("fs");
+  const xlsx = require("node-xlsx");*/
+});
+ipcMain.on("school_check2",(event,arg)=>{
+  console.log(arg);
+  let ret:Array<any> = [{message:["学校","学科","类别编号","类别","评估"]}];
+  
+  const sc:{[key:string]:number}={
+      'A+':5,
+      'A':4,
+      'A-':3,
+      'B+':2,
+      'B':1,
+      'B-':0,
+      'C+':-1,
+      'C':-2,
+      'C-':-3
+    };
+    
+  for(let x=0;x<pingce.length;x++){
+    if(pingce[x][4]==arg[0]){
+      ret.push({message:[pingce[x][4],pingce[x][2],pingce[x][1],pingce[x][0],pingce[x][3]]});
+    }
+  }
+  console.log(ret);
+  ret.sort((a:any,b:any)=>sc[b['message'][4]]-sc[a['message'][4]]);
+
+  event.returnValue = ret;
+  /*const fs = require("fs");
+  const xlsx = require("node-xlsx");*/
+});
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {

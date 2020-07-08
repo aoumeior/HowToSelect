@@ -62,7 +62,8 @@ export default {
     return {
       items: [
         { title: "分数选大学", icon: "mdi-view-dashboard", router: "about" },
-        { title: "位次选大学", icon: "mdi-image", router: "/" }
+        { title: "位次选大学", icon: "mdi-image", router: "test" },
+        { title: "学校专业评估", icon: "mdi-image", router: "sousuo" }
         // { title: "About", icon: "mdi-help-box" }
       ],
       right: false,
