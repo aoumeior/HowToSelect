@@ -25,6 +25,21 @@ function readdirs(ljs:string){
     tt.splice(0,1);
     ss=ss.concat(tt);
   }
+  //console.log(ss);
+  let lens=ss.length;
+  for(let i=0;i<lens;i++){
+    if(ss[i].length==0){
+      ss.slice(i,1);
+      i--;
+      lens--;
+      continue;
+    }else{
+      console.log(ss[i]);
+      ss[i][3]=ss[i][3].replace(/(\s*)/g,"");
+    }
+    
+  }
+  console.log(ss.length);
   return ss;
 }
 
@@ -51,17 +66,20 @@ const reads=function(ljs:string,lis:number){
       //tt.splice(0,1);
       ss=ss.concat(tt);
     }
+    console.log(ss.length);
     switch(lis){
       case 1:rd=ss;break;
       case 2:zyfen=ss;break;
       case 3:zsjz=ss;break;
+      case 4:pingce=ss;break;
     }
     jiliang++;
   });
 }
 
 function pinggu(){
-  pingce=readdirs("./public/excel/pinggu/");
+  //pingce=readdirs("./public/excel/pinggu/");
+  reads("./public/excel/pinggu/",4);
   reads(lj1,1);
   reads(lj2,2);
   reads(lj3,3);
@@ -278,14 +296,17 @@ function sjhq2(n:string,f:number,w:number,wl:string):number{
           let city="-";
           let syl="-";
           let sn="-";
+          let gw="";
           if(schinf[sfsy[x]]){
             s985=schinf[sfsy[x]]['a985'];
             city=schinf[sfsy[x]]['city'];
             syl=schinf[sfsy[x]]['syl'];
             sn=schinf[sfsy[x]]['school_nature'];
+            gw=schinf[sfsy[x]]['guanwang'];
           }
           let tts=rd[xq[sfsy[x]][i]];
-          xdata.push([sfsy[x],tts[1],tts[4],tts[3],tts[2],tts[5],city,s985,syl,sn,tts[7],tts[8],jz[sfsy[x]]]);
+          let lins:string=jz[sfsy[x]] || gw;
+          xdata.push([sfsy[x],tts[1],tts[4],tts[3],tts[2],tts[5],city,s985,syl,sn,tts[7],tts[8],lins]);
       }	
   }
   
@@ -339,6 +360,7 @@ ipcMain.on("school_check",(event,arg)=>{//查询该学校是否在pingce当中
   //let x:Array<any>=[];
   let x=0;
   for(;x<pingce.length;x++){
+    //console.log(pingce[x]);
     if(pingce[x][4].indexOf(arg[0])>=0 && cx(pingce[x][4])){
       ret.push({message:pingce[x][4]});
     }
