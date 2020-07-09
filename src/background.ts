@@ -323,11 +323,11 @@ function sjhq2(n:string,f:number,w:number,wl:string):number{
   writes(pat+n+" 学校.xlsx",xdata);
   
   let ssy;
-  const zydata=[["学校","年份","专业","最高","平均","最低","最低位次","批次","文理"]];
+  const zydata=[["学校","年份","专业","最高","平均","最低","最低位次","批次","文理","类别","第几批特色专业","专业评估"]];
   for(x in sfsy){
       for(i=0;i<zylist[sfsy[x]].length;i++){
           ssy=zyfen[zylist[sfsy[x]][i]];
-          zydata.push([sfsy[x],ssy[1],ssy[8],ssy[5],ssy[4],ssy[3],ssy[6],ssy[2],ssy[7]]);
+          zydata.push([sfsy[x],ssy[1],ssy[8],ssy[5],ssy[4],ssy[3],ssy[6],ssy[2],ssy[7],ssy[10],ssy[11],ssy[12]]);
       }
   }
   writes(pat+n+"专业.xlsx",zydata);

@@ -7,7 +7,7 @@
       <table id="example-2">
         <tr v-for="sitem in sitems" :key="sitem.message">
           <td v-for="std in sitem.message" :key="std">
-            {{ std }}
+            | {{ std }} 
           </td>
         </tr>
       </table>
