@@ -5,12 +5,12 @@
       permanent
       router
       v-model="drawer"
-      :color="color"
+      color="#26c6da"
       :expand-on-hover="expandOnHover"
       :mini-variant="miniVariant"
       :right="right"
-      absolute
-      dark>
+      dark
+    >
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title">你的高考</v-list-item-title>
@@ -36,13 +36,19 @@
     </v-navigation-drawer>
 
     <!-- Sizes your content based upon application components -->
-    <v-main>
-      <!-- Provides the application the proper gutter -->
-      <v-container>
-        <!-- If using vue-router -->
-        <router-view></router-view>
-      </v-container>
-    </v-main>
+    <v-parallax
+      :height="screenHeight"
+      src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
+    >
+      <v-main>
+        <!-- Provides the application the proper gutter -->
+
+        <v-container>
+          <!-- If using vue-router -->
+          <router-view></router-view>
+        </v-container>
+      </v-main>
+    </v-parallax>
   </v-app>
 </template>
 <style scoped>
@@ -54,12 +60,12 @@ li {
 }
 </style>
 
-
 <script>
 export default {
   name: "App",
   data() {
     return {
+      screenHeight: window.innerHeight,
       items: [
         { title: "分数选大学", icon: "mdi-view-dashboard", router: "about" },
         { title: "位次选大学", icon: "mdi-image", router: "test" },
@@ -76,7 +82,20 @@ export default {
       background: false
     };
   },
-  components: {
-  }
+  computed: {
+    scrollerHeight: function() {
+      return window.innerHeight;
+    }
+  },
+  mounted() {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const that = this;
+    window.onresize = () => {
+      return (() => {
+        that.screenHeight = window.innerHeight;
+      })();
+    };
+  },
+  components: {}
 };
 </script>
