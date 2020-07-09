@@ -10,7 +10,7 @@ import fs from 'fs'
 import xlsx from 'node-xlsx'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 let pingce:Array<Array<any>>=[];
-function readdirs(ljs:string){
+/*function readdirs(ljs:string){
   const fs = require("fs");
   const path = require('path');
   const xlsx = require("node-xlsx");
@@ -42,7 +42,7 @@ function readdirs(ljs:string){
   console.log(ss.length);
   return ss;
 }
-
+*/
 let jiliang=0;
 const lj='./public/excel/';
 const lj1=lj+'schoolf/';
@@ -79,10 +79,26 @@ const reads=function(ljs:string,lis:number){
 
 function pinggu(){
   //pingce=readdirs("./public/excel/pinggu/");
-  reads("./public/excel/pinggu/",4);
+  /*reads("./src/excel/pinggu/",4);
   reads(lj1,1);
   reads(lj2,2);
-  reads(lj3,3);
+  reads(lj3,3);*/
+  let ls:{[key:string]:any};
+  ls=require("./excel/nsch.json");
+  rd=ls["data"];
+  //console.log(rd[0]);
+  ls={};
+  ls=require("./excel/nzy.json");
+  zyfen=ls["data"];
+  //console.log(zyfen[0]);
+  ls={};
+  ls=require("./excel/nzs.json");
+  zsjz=ls["data"];
+ // console.log(zsjz[0]);
+  ls={};
+  ls=require("./excel/npgb.json");
+  pingce=ls["data"];
+  //console.log(pingce[0]);
 }
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -163,15 +179,15 @@ app.on('ready', async () => {
 
 
 function sjhq2(n:string,f:number,w:number,wl:string):number{
+  //console.log(n);
+  //console.log(rd[1]);
   const fs = require("fs");
   const path = require('path');
   const xlsx = require("node-xlsx");
   const fenduanbiao=require('./json/fenduanbiao.json');
   
   const pat =app.getPath("desktop")+"\\";
-  while(jiliang<3){
-    
-  }
+  
   //把所有数据读取，得到三个二维数组
   const jz:{[key:string]:any}={};
   for(let iii=0;iii<zsjz.length;iii++){
@@ -263,6 +279,7 @@ function sjhq2(n:string,f:number,w:number,wl:string):number{
   }
   //建立关于学校列表学校和分数的对应关系索引，进行学校排序
   sfsy.sort((a:string,b:string)=>rd[xq[a][0]][5]-rd[xq[b][0]][5]);
+  //console.log(sfsy);
   //专业分数:school_name	years	batch_name	mins	avgs	maxs	min_section	local_type	s_name
 
   const zylist:{[key:string]:any}={};//保存对应学校专业的索引
@@ -309,6 +326,7 @@ function sjhq2(n:string,f:number,w:number,wl:string):number{
           xdata.push([sfsy[x],tts[1],tts[4],tts[3],tts[2],tts[5],city,s985,syl,sn,tts[7],tts[8],lins]);
       }	
   }
+  //console.log(xdata);
   
   const writes=function(loads:string,sj:any){
       const buffer=xlsx.build([
@@ -331,6 +349,7 @@ function sjhq2(n:string,f:number,w:number,wl:string):number{
       }
   }
   writes(pat+n+"专业.xlsx",zydata);
+  //console.log(zydata);
   return 1;
 }
 
