@@ -2,7 +2,7 @@
     <div class="sousuo">
       <input  v-model="inp" style="border:black #BBBBBB 2px; border-radius:5px; " /><button @click="sub">搜索</button>
       <ul id="example-1">您要搜索的是：
-          <a v-for="item in items" :key="item.message" @click="liclic(item.message)" href="#"> {{ item.message }} .</a>
+          <a v-for="item in items" :key="item.message" @click="liclic(item.message)" > {{ item.message }} .</a>
       </ul>
       <table id="example-2">
         <tr v-for="sitem in sitems" :key="sitem.message">
