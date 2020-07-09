@@ -70,6 +70,10 @@ export default {
   methods: {
     sub() {
       this.sitems = [];
+      if(this.inp.length==0 || this.inp=="" || /^\s{1,}$/.test(this.inp)){
+        this.items=[{message:"请输入要搜索的学校"}];
+        return;
+      }
       const result = ipcRenderer.sendSync("school_check", [this.inp]);
       this.items = result;
       //alert(result);
