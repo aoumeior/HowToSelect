@@ -177,6 +177,11 @@ app.on('ready', async () => {
   createWindow();
 });
 
+let xxbiaos:Array<Array<any>>=[];
+let zybiaos:Array<Array<any>>=[];
+let xxbiaobs=["学校","年份","最高分","平均分","最低分","最低位次","城市","985/211","双一流","公办/民办","批次","文理","招生简章"];
+let zybiaobs=["学校","年份","专业","最高","平均","最低","最低位次","批次","文理","类别","第几批特色专业","专业评估","学校所在省份"];
+let yhname="";
 
 function sjhq2(n:string,f:number,w:number,wl:string):number{
   //console.log(n);
@@ -185,7 +190,7 @@ function sjhq2(n:string,f:number,w:number,wl:string):number{
   const path = require('path');
   const xlsx = require("node-xlsx");
   const fenduanbiao=require('./json/fenduanbiao.json');
-  
+  yhname=n;
   const pat =app.getPath("desktop")+"\\";
   
   //把所有数据读取，得到三个二维数组
@@ -218,7 +223,7 @@ function sjhq2(n:string,f:number,w:number,wl:string):number{
   for(let j=0;j<rd.length;j++){//选取符合范围的数据
       bs=-1;
       km=rd[j][8];
-      if(km==wenli){
+      if(km==wenli || rd[j][7].indexOf("提前批")>=0){
           continue;
       }else{
         x=parseInt(rd[j][5]);
@@ -306,7 +311,8 @@ function sjhq2(n:string,f:number,w:number,wl:string):number{
   }
   //let schinf1=fs.readFileSync(pat+'nschinf.json');
   const schinf:{[key:string]:any}=require("./json/n.json");
-  const xdata=[["学校","年份","最高分","平均分","最低分","最低位次","城市","985/211","双一流","公办/民办","批次","文理","招生简章"]];
+  //const xdata=[["学校","年份","最高分","平均分","最低分","最低位次","城市","985/211","双一流","公办/民办","批次","文理","招生简章"]];
+  const xdata:Array<Array<any>>=[];
   for(x in sfsy){
       for(i=0;i<xq[sfsy[x]].length;i++){
           let s985="-";
@@ -337,28 +343,103 @@ function sjhq2(n:string,f:number,w:number,wl:string):number{
       ]);
       fs.writeFileSync(loads,buffer,{'flag':'w'});
   }
-  
-  writes(pat+n+" 学校.xlsx",xdata);
+  xxbiaos=xdata;
+  //writes(pat+n+" 学校.xlsx",xdata);
   
   let ssy;
-  const zydata=[["学校","年份","专业","最高","平均","最低","最低位次","批次","文理","类别","第几批特色专业","专业评估"]];
+  //const zydata=[["学校","年份","专业","最高","平均","最低","最低位次","批次","文理","类别","第几批特色专业","专业评估",学校所在省份]];
+  const zydata:Array<Array<any>>=[];
   for(x in sfsy){
       for(i=0;i<zylist[sfsy[x]].length;i++){
           ssy=zyfen[zylist[sfsy[x]][i]];
-          zydata.push([sfsy[x],ssy[1],ssy[8],ssy[5],ssy[4],ssy[3],ssy[6],ssy[2],ssy[7],ssy[10],ssy[11],ssy[12]]);
+          zydata.push([sfsy[x],ssy[1],ssy[8],ssy[5],ssy[4],ssy[3],ssy[6],ssy[2],ssy[7],ssy[10],ssy[11],ssy[12],schinf[sfsy[x]]["sheng"]]);
       }
   }
-  writes(pat+n+"专业.xlsx",zydata);
+  zybiaos=zydata;
+  //writes(pat+n+"专业.xlsx",zydata);
   //console.log(zydata);
   return 1;
 }
+ipcMain.on("getzy",(event,arg)=>{
+  let lszy:Array<Array<any>>=[];
+  for(let s=0;s<zybiaos.length;s++){
+    for(let m=0;m<zybiaos[s].length;m++){
+      if(zybiaos[s][m]==""){
+        zybiaos[s][m]="--";
+      }
+    }
+  }
 
 
+  lszy=zybiaos.slice(0);
+  for(let i=0;i<lszy.length;i++){
+    lszy[i][2]=lszy[i][2].slice(0,7)+"...";
+  }
+  event.returnValue=[zybiaobs,lszy];
+});
+const writes=function(loads:string,sj:any){
+  const buffer=xlsx.build([
+      {
+          name:"sheet1",
+          data:sj
+      }
+  ]);
+  fs.writeFileSync(loads,buffer,{'flag':'w'});
+}
+ipcMain.on("tijiaosy",(event,arg)=>{
+        const ls=[];
+        let lss=0;
+        const sy=arg[0];
+        const kz=arg[1];
+        for(let i=0;i<zybiaos.length;i++){
+          lss=0;
+          for(let p=0;p<sy.length;p++){
+            if(kz[p]==1 && sy[p].xx[0]!="全选"){
+              for(let j=0;j<sy[p].xx.length;j++){
+                if(sy[p].xx[j]==zybiaos[i][p]){
+                  lss+=1;
+                  break;
+                }
+              }
+            }else{
+              lss+=1;
+            }
+          }
+          if(lss==sy.length){
+            ls.push(zybiaos[i]);
+          }
+        }
+        zybiaos=ls;
+
+        let xxlen=xxbiaos.length;
+        for(let jj=0;jj<xxlen;jj++){
+          let lsss=0;
+          for(let kk=0;kk<sy[0].xx.length;kk++){
+            if(xxbiaos[jj][0]==sy[0].xx[kk]){
+              lsss=1;
+              break;
+            }
+          }
+          if(lsss==0){
+            xxbiaos.splice(jj,1);
+            jj--;
+            xxlen--;
+          }
+        }
+
+
+        const pat =app.getPath("desktop")+"\\";
+        zybiaos.unshift(zybiaobs);
+        xxbiaos.unshift(xxbiaobs);
+        writes(pat+yhname+"专业.xlsx",zybiaos);
+        writes(pat+yhname+"学校.xlsx",xxbiaos);
+        event.returnValue="文件生成到桌面";
+});
 
 ipcMain.on("student_status",(event,arg)=>{
   //console.log(app.getAppPath("src"));
   let ss=sjhq2(arg[0],arg[1],arg[2],arg[3]);
-  event.returnValue = "查询结果存放至桌面";
+  event.returnValue = "此处跳转至tablesel";
   /*const fs = require("fs");
   const xlsx = require("node-xlsx");*/
 });
