@@ -2,7 +2,6 @@
   <div
     class="mx-auto"
    :loading="isUpdating">
-    <!-- <v-img height="200" src="https://cdn.vuetifyjs.com/images/cards/dark-beach.jpg"> -->
       <v-row>
         <v-col class="text-right" cols="12">
           <v-menu bottom left transition="slide-y-transition">
@@ -29,7 +28,6 @@
           </v-col>
         </v-row>
       </v-row>
-    <!-- </v-img> -->
     <v-form>
       <v-container>
         <v-row>

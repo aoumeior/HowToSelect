@@ -1,26 +1,22 @@
 <template>
   <v-container>
-    <v-card color="#26c6da" max-width="400">
-      <v-card-text class="headline font-weight-bold">你必须输入一个高校才能显示高校评估情况。</v-card-text>
+    <v-row no-gutters>
+      <v-col cols="12" sm="12">
+        <div class="text-h4">学校专业评估</div>
+      </v-col>
+    </v-row>
 
-      <v-card-actions>
-        <v-list-item class="grow">
-          <v-list-item-content>
-            <v-row align="end">
-              <v-col>
-                <v-text-field v-model="inp" label="高校名称" :rules="rules" hide-details="auto"></v-text-field>
-              </v-col>
-              <v-col>
-                <v-btn color="primary" @click="sub">搜索</v-btn>
-              </v-col>
-            </v-row>
-          </v-list-item-content>
-        </v-list-item>
-      </v-card-actions>
-    </v-card>
+    <v-row align="end">
+      <v-col>
+        <v-text-field v-model="inp" label="高校名称" :rules="rules" hide-details="auto"></v-text-field>
+      </v-col>
+      <v-col>
+        <v-btn color="primary" @click="sub">搜索</v-btn>
+      </v-col>
+    </v-row>
+
     <v-sheet class="mt-5 mx-auto" elevation="6">
       <v-tabs
-        v-if="items.length >= 1"
         background-color="cyan"
         dark
         next-icon="mdi-arrow-right-bold-box-outline"
@@ -29,6 +25,7 @@
       >
         <v-tabs-slider color="yellow"></v-tabs-slider>
         <v-tab
+          style="background-color: rgba(0, 0, 0, 0.);"
           v-for="item in items"
           :key="item.message"
           @click="liclic(item.message)"
@@ -40,7 +37,8 @@
       class="m-10 mx-auto"
       v-if="sitems.length >= 1"
       id="example-2"
-      :height="screenHeight1"
+      :height="400"
+      style="background-color: rgba(0, 0, 0, 0.1);"
     >
       <template v-slot:default>
         <tbody>
@@ -58,6 +56,11 @@ const { ipcRenderer } = window.require("electron");
 
 export default {
   name: "Sousuo",
+  mounted: function() {
+    this.$nextTick(function() {
+      this.sub();
+    });
+  },
   components: {},
   data() {
     return {

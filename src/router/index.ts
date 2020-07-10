@@ -5,6 +5,7 @@ import Test from '../views/Test.vue'
 import { test } from 'mocha';
 import Sousuo from '../views/Sousuo.vue'
 import Tablesel from '../views/Tablesel.vue'
+import SelectUniversityBaseScore from '../views/SelectUniversityBaseScore.vue'
 Vue.use(VueRouter)
 
   const routes: Array<RouteConfig> = [
@@ -12,6 +13,11 @@ Vue.use(VueRouter)
     path: '/',
     name: 'Home',
     component: Test
+  },
+  {
+    path: '/SelectUniversityBaseScore',
+    name: 'SelectUniversityBaseScore',
+    component: SelectUniversityBaseScore
   },
   {
     path: '/about',

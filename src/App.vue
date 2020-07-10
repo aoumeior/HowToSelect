@@ -9,7 +9,6 @@
       :expand-on-hover="expandOnHover"
       :mini-variant="miniVariant"
       :right="right"
-      dark
     >
       <v-list-item>
         <v-list-item-content>
@@ -36,19 +35,13 @@
     </v-navigation-drawer>
 
     <!-- Sizes your content based upon application components -->
-    <v-parallax
-      :height="screenHeight"
-      src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
-    >
-      <v-main>
+      <v-main :style="note">
         <!-- Provides the application the proper gutter -->
-
-        <v-container>
+        <v-container align="center" justify="center">
           <!-- If using vue-router -->
           <router-view></router-view>
         </v-container>
       </v-main>
-    </v-parallax>
   </v-app>
 </template>
 <style scoped>
@@ -70,8 +63,12 @@ export default {
         { title: "分数选大学", icon: "mdi-view-dashboard", router: "about" },
         { title: "位次选大学", icon: "mdi-image", router: "test" },
         { title: "学校专业评估", icon: "mdi-image", router: "sousuo" },
-        { title: "分数筛选（后续删除）", icon: "mdi-image", router: "tablesel" }
-        // { title: "About", icon: "mdi-help-box" }
+        { title: "分数筛选（后续删除）", icon: "mdi-image", router: "tablesel" },
+        {
+          title: "分数选择大学",
+          icon: "mdi-image",
+          router: "SelectUniversityBaseScore"
+        },
       ],
       right: false,
       drawer: true,
@@ -80,7 +77,13 @@ export default {
       permanent: true,
       miniVariant: false,
       expandOnHover: false,
-      background: false
+      background: false,
+      note: {
+        backgroundImage: "url('https://cdn.vuetifyjs.com/images/parallax/material.jpg')",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "25px auto",
+        marginTop: "0px"
+      }
     };
   },
   computed: {
