@@ -215,6 +215,34 @@ export default {
       this.sj = ls;
       this.items1 = this.sj.slice(0, this.zpage);
       this.pages = parseInt(this.sj.length / this.zpage) + 1;
+      //每次索引完之后更新索引表
+      const nsy=[];//首先根据现有索引出来的数据建立新索引
+      let lssy = [];
+      for (let i = 0; i < this.kz.length; i++) {
+        if (this.kz[i] == 1) {
+          lssy = [];
+          for (let j = 0; j < this.sj.length; j++) {
+            let p = 0;
+            for (let k = 0; k < lssy.length; k++) {
+              if (lssy[k] == this.sj[j][i]) {
+                p = 1;
+                break;
+              }
+            }
+            if (p == 0) {
+              lssy.push(this.sj[j][i]);
+            }
+          }
+          nsy.push({ kz: 1, data: lssy, xx: [], bh: i });
+        } else {
+          nsy.push({ kz: 0, data: [], xx: [], bh: i });
+        }
+      }
+      //新索引建立完毕，对已选择项目进行选择
+      for(let oi=0;oi<this.sy.length;oi++){
+        nsy[oi].xx=this.sy[oi].xx;
+      }
+      this.sy=nsy;
     },
     tijiao() {
       const s = ipcRenderer.sendSync("tijiaosy", [this.sy, this.kz]);
