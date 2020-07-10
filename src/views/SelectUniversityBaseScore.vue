@@ -61,11 +61,11 @@
                     mandatory
                     column
                   >
-                    <v-chip @click="(()=>{itemq.xx = []; itemq.xx.push('全选'); suoyin();})">全选</v-chip>
+                    <v-chip @click="(()=>{itemq.xx = []; itemq.xx.push('全选'); suoyin(itemq.bh);})">全选</v-chip>
                     <v-chip
                       v-for="ee in itemq.data"
                       :input="ee"
-                      @click="(()=>{itemq.xx = []; itemq.xx.push(ee); suoyin();})"
+                      @click="(()=>{itemq.xx = []; itemq.xx.push(ee); suoyin(itemq.bh);})"
                       :key="ee"
                     >{{ ee }}</v-chip>
                   </v-chip-group>
@@ -189,7 +189,7 @@ export default {
         this.page = p;
       }
     },
-    suoyin() {
+    suoyin(ccc) {
       console.log(this.sy[0].xx);
       this.page = 1;
       const ls = [];
@@ -242,6 +242,7 @@ export default {
       for(let oi=0;oi<this.sy.length;oi++){
         nsy[oi].xx=this.sy[oi].xx;
       }
+      nsy[ccc].data=this.sy[ccc].data;
       this.sy=nsy;
     },
     tijiao() {
