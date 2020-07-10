@@ -1,33 +1,31 @@
 <template>
-  <div
-    class="mx-auto"
-   :loading="isUpdating">
-      <v-row>
-        <v-col class="text-right" cols="12">
-          <v-menu bottom left transition="slide-y-transition">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn icon v-bind="attrs" v-on="on">
-                <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item @click="isUpdating = true">
-                <v-list-item-action>
-                  <v-icon>mdi-settings</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title>Update</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-menu>
+  <div class="mx-auto" :loading="isUpdating">
+    <v-row>
+      <v-col class="text-right" cols="12">
+        <v-menu bottom left transition="slide-y-transition">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon v-bind="attrs" v-on="on">
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item @click="isUpdating = true">
+              <v-list-item-action>
+                <v-icon>mdi-settings</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Update</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-col>
+      <v-row class="pa-4" align="center" justify="center">
+        <v-col class="text-center">
+          <h3 class="headline">{{ title }}</h3>
         </v-col>
-        <v-row class="pa-4" align="center" justify="center">
-          <v-col class="text-center">
-            <h3 class="headline">{{ title }}</h3>
-          </v-col>
-        </v-row>
       </v-row>
+    </v-row>
     <v-form>
       <v-container>
         <v-row>
