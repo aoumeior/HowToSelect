@@ -110,6 +110,7 @@
     <v-bottom-sheet v-model="sheet">
       <v-sheet class="text-center" height="500px">
         <v-btn class="mt-6" @click="sheet = !sheet">关闭</v-btn>
+        <v-btn class="mt-6" @click="gets1">重置</v-btn>
         <v-simple-table
           class="m-10 mx-auto"
           id="example-2"
@@ -183,13 +184,24 @@ export default {
     },
     gets1() {
       //["学校","年份","专业","最高","平均","最低","最低位次","批次","文理","类别","第几批特色专业","专业评估",学校所在省份]
-
-      this.__proto__.kz = [1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1];
+      //alert(this.kz);
+      if(this.kz==undefined || this.kz==null)
+        this.__proto__.kz = [1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1];
       const s = ipcRenderer.sendSync("getzy", {});
       this.items = s[0];
       this.items1 = s[1].slice(0, this.zpage);
-      this.__proto__.sj = s[1];
-      this.__proto__.yssj = s[1].slice(0);
+      if(this.sj==undefined || this.sj==null){
+        this.__proto__.sj = s[1];
+      }
+      else{
+        this.sj = s[1];
+      }
+      if(this.sj==undefined || this.sj==null){
+        this.__proto__.yssj = s[1].slice(0);
+      }
+      else{
+        this.yssj= s[1];
+      }
       //alert(this.sj);
       this.pages = parseInt(s[1].length / this.zpage) + 1;
       this.sy = [];
