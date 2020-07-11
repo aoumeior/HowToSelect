@@ -68,7 +68,7 @@
                       <v-chip
                         v-for="ee in itemq.data"
                         :input="ee"
-                        @click="(()=>{itemq.xx = []; itemq.xx.push(ee); suoyin(itemq.bh);})"
+                        @click="(()=>{if(itemq.xx[0]=='全选'){itemq.xx.splice(0,1);}; itemq.xx.push(ee); suoyin(itemq.bh);})"
                         :key="ee"
                       >{{ ee }}</v-chip>
                     </v-chip-group>
@@ -280,7 +280,10 @@ export default {
       for (let oi = 0; oi < this.sy.length; oi++) {
         nsy[oi].xx = this.sy[oi].xx;
       }
-      nsy[ccc].data = this.sy[ccc].data;
+      if(this.sy[ccc].xx[0]!="全选"){//是全选，则刷新当前bh对应的索引列，否则不刷新
+        nsy[ccc].data = this.sy[ccc].data;
+      }
+      
       this.sy = nsy;
     },
     tijiao() {
