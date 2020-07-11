@@ -71,7 +71,7 @@ var fenduanbiao=require("./fenduanbiao.json");
 
 var len1=school_score.length;
 for(var i=0;i<len1;i++){
-	if(parseInt(school_score[i][1])!=2018 && parseInt(school_score[i][1])!=2019 || school_score[i][7]=="专科批"){
+	if(parseInt(school_score[i][1])!=2018 && parseInt(school_score[i][1])!=2019 || school_score[i][7]=="专科批" || /[(\u827a\u672f){1,}]/g.test(school_score[i][8])){
 		school_score.splice(i,1);
 		i--;
 		len1--;
@@ -101,7 +101,7 @@ for(var i=0;i<len1;i++){
 len2=zy_score.length;
 var s,b;
 for(var i=0;i<len2;i++){
-	if(parseInt(zy_score[i][1])!=2018 && parseInt(zy_score[i][1])!=2019 || zy_score[i][8]==undefined || zy_score[i][8]=="-"){
+	if(parseInt(zy_score[i][1])!=2018 && parseInt(zy_score[i][1])!=2019 || zy_score[i][8]==undefined || zy_score[i][8]=="-" || /[(\u827a\u672f){1,}]/g.test(zy_score[i][7])){
 		zy_score.splice(i,1);
 		i--;
 		len2--;
