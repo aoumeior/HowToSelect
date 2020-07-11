@@ -60,10 +60,10 @@ export default {
     return {
       screenHeight: window.innerHeight,
       items: [
-        { title: "分数选大学", icon: "mdi-view-dashboard", router: "about" },
-        { title: "位次选大学", icon: "mdi-image", router: "test" },
+        // { title: "分数选大学", icon: "mdi-view-dashboard", router: "about" },
+        // { title: "位次选大学", icon: "mdi-image", router: "test" },
         { title: "学校专业评估", icon: "mdi-image", router: "sousuo" },
-        { title: "分数筛选（后续删除）", icon: "mdi-image", router: "tablesel" },
+        // { title: "分数筛选（后续删除）", icon: "mdi-image", router: "tablesel" },
         {
           title: "分数选择大学",
           icon: "mdi-image",

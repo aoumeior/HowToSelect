@@ -7,7 +7,7 @@
     </v-row>
     <v-row no-gutters class="mt-3">
       <v-col cols="12" sm="12">
-        <v-stepper v-model="e1" style="background-color: rgba(226, 225, 228, 0.4);">
+        <v-stepper v-model="e1" class="rounded-0" style="background-color: rgba(226, 225, 228, 1);">
           <v-stepper-header>
             <v-stepper-step :complete="e1 > 1" step="1">输入信息</v-stepper-step>
             <v-divider></v-divider>
@@ -17,14 +17,26 @@
           </v-stepper-header>
           <v-stepper-items>
             <v-stepper-content step="1" style="background-color: rgba(0, 0, 0, 0);">
-              <v-form>
+              <v-form ref="form"
+              v-model="valid">
                 <v-container>
                   <v-row>
                     <v-col cols="12" md="6">
-                      <v-text-field v-model="name" color="blue-grey lighten-2" label="姓名"></v-text-field>
+                      <v-text-field
+                        v-model="name"
+                        color="blue-grey lighten-2"
+                        :rules="nameRules"
+                        label="姓名"
+                      ></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
-                      <v-text-field v-model="score" :counter="3" label="分数" required></v-text-field>
+                      <v-text-field
+                        v-model="score"
+                        :counter="3"
+                        label="分数"
+                        :rules="scoreRules"
+                        required
+                      ></v-text-field>
                     </v-col>
                     <v-col cols="12">
                       <v-select
@@ -38,23 +50,23 @@
                   </v-row>
                 </v-container>
               </v-form>
-              <v-btn color="primary" @click="e1 = 2; Submit(); gets1();">继续</v-btn>
+              <v-btn color="primary" @click="e1 = 2;  Submit(); gets1();" :disabled="!valid">继续</v-btn>
             </v-stepper-content>
             <v-stepper-content step="2">
-              <v-card :outlined="true" class="mb-12 cyan lighten-4">
+              <v-card :outlined="true" class="mb-12 blue-grey lighten-5">
                 <v-container>
                   <v-card-title>
-                    <h2 class="display-1">选择你喜欢的专业</h2>
+                    <h2 class="display-1">根据你的选择进行筛选：</h2>
                     <v-spacer></v-spacer>
                     <span class="title">Hts</span>
                   </v-card-title>
 
-                  <v-card-text>根据你的喜好选择你最喜欢的专业（多选），我们可以进一步的删选相关大学。</v-card-text>
+                  <v-card-text>根据你的喜好在类别下进行选择（多选），我们可以进一步的删选相关大学。</v-card-text>
 
                   <v-divider class="mx-4"></v-divider>
 
                   <v-card-text v-for="itemq in sy" :key="itemq">
-                    <span v-if="itemq.kz === 1" class="subheading">专业名</span>
+                    <span v-if="itemq.kz === 1" class="subheading">{{items[itemq.bh]}}</span>
 
                     <v-chip-group
                       v-if="itemq.kz === 1"
@@ -66,6 +78,7 @@
                         active-class="primary--text"
                       >全选</v-chip>
                       <v-chip
+                        active
                         v-for="ee in itemq.data"
                         :input="ee"
                         @click="(()=>{if(itemq.xx[0]=='全选'){itemq.xx.splice(0,1);}; itemq.xx.push(ee); suoyin(itemq.bh);})"
@@ -74,9 +87,7 @@
                     </v-chip-group>
                   </v-card-text>
                 </v-container>
-                <v-btn fab color="cyan accent-2" bottom right fixed @click="sheet = !sheet">
-                  <v-icon>mdi-play</v-icon>
-                </v-btn>
+                <v-btn fab color="cyan accent-2" bottom right fixed @click="sheet = !sheet">预览</v-btn>
               </v-card>
               <v-btn color="primary" @click="e1 = 3">继续</v-btn>
               <v-btn @click="e1 <= 1? e1=1: e1--;" text>上一步</v-btn>
@@ -94,13 +105,19 @@
                   </tr>
                 </tbody>
               </v-simple-table>
-              <button @click="fy(-1)">上一页</button>
-              <span>第{{ page }}页</span>
-              <span>/共{{ pages }}页</span>
-              <span>每页{{ zpage }} 个</span>
-              <button @click="fy(1)">下一页</button>
-              <v-btn color="primary" @click="tijiao">导出</v-btn>
-              <v-btn @click="e1 <= 1? e1=1: e1--;" text>上一步</v-btn>
+              <v-row no-gutters>
+                <v-col cols="12" sm="6">
+                  <v-btn color="primary" @click="tijiao">导出</v-btn>
+                  <v-btn @click="e1 <= 1? e1=1: e1--;" text>上一步</v-btn>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <button @click="fy(-1)">上一页</button>
+                  <span>第{{ page }}页</span>
+                  <span>/共{{ pages }}页</span>
+                  <span>每页{{ zpage }} 个</span>
+                  <button @click="fy(1)">下一页</button>
+                </v-col>
+              </v-row>
             </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
@@ -170,7 +187,18 @@ export default {
       left: false,
       transition: "slide-y-reverse-transition",
 
-      sheet: false
+      sheet: false,
+
+      nameRules: [
+        v => !!v || "姓名为必须字段",
+        v => v.length <= 3 || "姓名必须超过三个字符"
+      ],
+
+      scoreRules: [
+        v => !!v || "分数为必须字段",
+        v => v.length <= 750 || v.length > 0 || "分数必须大于0，小于750分"
+      ],
+      valid: true,
     };
   },
   methods: {
@@ -184,23 +212,20 @@ export default {
     },
     gets1() {
       //["学校","年份","专业","最高","平均","最低","最低位次","批次","文理","类别","第几批特色专业","专业评估",学校所在省份]
-      //alert(this.kz);
-      if(this.kz==undefined || this.kz==null)
+      if (this.kz == undefined || this.kz == null)
         this.__proto__.kz = [1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1];
       const s = ipcRenderer.sendSync("getzy", {});
       this.items = s[0];
       this.items1 = s[1].slice(0, this.zpage);
-      if(this.sj==undefined || this.sj==null){
+      if (this.sj == undefined || this.sj == null) {
         this.__proto__.sj = s[1];
-      }
-      else{
+      } else {
         this.sj = s[1];
       }
-      if(this.sj==undefined || this.sj==null){
+      if (this.sj == undefined || this.sj == null) {
         this.__proto__.yssj = s[1].slice(0);
-      }
-      else{
-        this.yssj= s[1];
+      } else {
+        this.yssj = s[1];
       }
       //alert(this.sj);
       this.pages = parseInt(s[1].length / this.zpage) + 1;
@@ -292,10 +317,11 @@ export default {
       for (let oi = 0; oi < this.sy.length; oi++) {
         nsy[oi].xx = this.sy[oi].xx;
       }
-      if(this.sy[ccc].xx[0]!="全选"){//是全选，则刷新当前bh对应的索引列，否则不刷新
+      if (this.sy[ccc].xx[0] != "全选") {
+        //是全选，则刷新当前bh对应的索引列，否则不刷新
         nsy[ccc].data = this.sy[ccc].data;
       }
-      
+
       this.sy = nsy;
     },
     tijiao() {
