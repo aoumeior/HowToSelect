@@ -42,34 +42,41 @@
             </v-stepper-content>
             <v-stepper-content step="2">
               <v-card :outlined="true" class="mb-12 cyan lighten-4">
-                <v-card-title>
-                  <h2 class="display-1">选择你喜欢的专业</h2>
-                  <v-spacer></v-spacer>
-                  <span class="title">Hts</span>
-                </v-card-title>
+                <v-container>
+                  <v-card-title>
+                    <h2 class="display-1">选择你喜欢的专业</h2>
+                    <v-spacer></v-spacer>
+                    <span class="title">Hts</span>
+                  </v-card-title>
 
-                <v-card-text>根据你的喜好选择你最喜欢的专业（多选），我们可以进一步的删选相关大学。</v-card-text>
+                  <v-card-text>根据你的喜好选择你最喜欢的专业（多选），我们可以进一步的删选相关大学。</v-card-text>
 
-                <v-divider class="mx-4"></v-divider>
+                  <v-divider class="mx-4"></v-divider>
 
-                <v-card-text v-for="itemq in sy" :key="itemq">
-                  <span v-if="itemq.kz === 1" class="subheading">专业名</span>
+                  <v-card-text v-for="itemq in sy" :key="itemq">
+                    <span v-if="itemq.kz === 1" class="subheading">专业名</span>
 
-                  <v-chip-group
-                    v-if="itemq.kz === 1"
-                    active-class="deep-purple--text text--accent-4"
-                    mandatory
-                    column
-                  >
-                    <v-chip @click="(()=>{itemq.xx = []; itemq.xx.push('全选'); suoyin(itemq.bh);})">全选</v-chip>
-                    <v-chip
-                      v-for="ee in itemq.data"
-                      :input="ee"
-                      @click="(()=>{itemq.xx = []; itemq.xx.push(ee); suoyin(itemq.bh);})"
-                      :key="ee"
-                    >{{ ee }}</v-chip>
-                  </v-chip-group>
-                </v-card-text>
+                    <v-chip-group
+                      v-if="itemq.kz === 1"
+                      active-class="deep-purple--text text--accent-4"
+                      column
+                    >
+                      <v-chip
+                        @click="(()=>{itemq.xx = []; itemq.xx.push('全选'); suoyin(itemq.bh);})"
+                        active-class="primary--text"
+                      >全选</v-chip>
+                      <v-chip
+                        v-for="ee in itemq.data"
+                        :input="ee"
+                        @click="(()=>{itemq.xx = []; itemq.xx.push(ee); suoyin(itemq.bh);})"
+                        :key="ee"
+                      >{{ ee }}</v-chip>
+                    </v-chip-group>
+                  </v-card-text>
+                </v-container>
+                <v-btn fab color="cyan accent-2" bottom right fixed @click="sheet = !sheet">
+                  <v-icon>mdi-play</v-icon>
+                </v-btn>
               </v-card>
               <v-btn color="primary" @click="e1 = 3">继续</v-btn>
               <v-btn @click="e1 <= 1? e1=1: e1--;" text>上一步</v-btn>
@@ -81,14 +88,17 @@
                 :height="400"
                 style="background-color: rgba(0, 0, 0, 0.1);"
               >
-                <template v-slot:default>
-                  <tbody>
-                    <tr v-for="item1 in items1" :key="item1">
-                      <td v-for="item2 in item1" :key="item2">{{ item2 }}</td>
-                    </tr>
-                  </tbody>
-                </template>
+                <tbody>
+                  <tr v-for="item1 in items1" :key="item1">
+                    <td v-for="item2 in item1" :key="item2">{{ item2 }}</td>
+                  </tr>
+                </tbody>
               </v-simple-table>
+              <button @click="fy(-1)">上一页</button>
+              <span>第{{ page }}页</span>
+              <span>/共{{ pages }}页</span>
+              <span>每页{{ zpage }} 个</span>
+              <button @click="fy(1)">下一页</button>
               <v-btn color="primary" @click="tijiao">导出</v-btn>
               <v-btn @click="e1 <= 1? e1=1: e1--;" text>上一步</v-btn>
             </v-stepper-content>
@@ -96,22 +106,37 @@
         </v-stepper>
       </v-col>
     </v-row>
-    <v-row no-gutters v-if="e1 < 3">
-      <v-col cols="12" sm="12">
-        <div class="text">预览：</div>
-      </v-col>
-    </v-row>
-    <v-row no-gutters v-if="e1 < 3">
-      <v-col cols="12" sm="12">
-        <tr v-for="item1 in items1" :key="item1">
-          >
-          <td v-for="item2 in item1" :key="item2">{{ item2 }}</td>
-        </tr>
-      </v-col>
-    </v-row>
+
+    <v-bottom-sheet v-model="sheet">
+      <v-sheet class="text-center" height="500px">
+        <v-btn class="mt-6" @click="sheet = !sheet">关闭</v-btn>
+        <v-simple-table
+          class="m-10 mx-auto"
+          id="example-2"
+          :height="400"
+          style="background-color: rgba(0, 0, 0, 0.1);"
+        >
+          <template v-slot:default>
+            <tbody>
+              <tr v-for="item1 in items1" :key="item1">
+                <td v-for="item2 in item1" :key="item2">{{ item2 }}</td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+      </v-sheet>
+    </v-bottom-sheet>
   </v-container>
 </template>
-<style lang="scss" scoped="" type="text/css">
+<style>
+/* This is for documentation purposes and will not be needed in your application */
+#create .v-speed-dial {
+  position: absolute;
+}
+
+#create .v-btn--floating {
+  position: relative;
+}
 </style>
 <script>
 const { ipcRenderer } = window.require("electron");
@@ -131,7 +156,20 @@ export default {
       page: 1,
       pages: 0,
       zpage: 15,
-      sy: []
+      sy: [],
+
+      direction: "top",
+      fab: true,
+      fling: false,
+      hover: false,
+      tabs: null,
+      top: false,
+      right: true,
+      bottom: true,
+      left: false,
+      transition: "slide-y-reverse-transition",
+
+      sheet: false
     };
   },
   methods: {
@@ -216,7 +254,7 @@ export default {
       this.items1 = this.sj.slice(0, this.zpage);
       this.pages = parseInt(this.sj.length / this.zpage) + 1;
       //每次索引完之后更新索引表
-      const nsy=[];//首先根据现有索引出来的数据建立新索引
+      const nsy = []; //首先根据现有索引出来的数据建立新索引
       let lssy = [];
       for (let i = 0; i < this.kz.length; i++) {
         if (this.kz[i] == 1) {
@@ -239,11 +277,11 @@ export default {
         }
       }
       //新索引建立完毕，对已选择项目进行选择
-      for(let oi=0;oi<this.sy.length;oi++){
-        nsy[oi].xx=this.sy[oi].xx;
+      for (let oi = 0; oi < this.sy.length; oi++) {
+        nsy[oi].xx = this.sy[oi].xx;
       }
-      nsy[ccc].data=this.sy[ccc].data;
-      this.sy=nsy;
+      nsy[ccc].data = this.sy[ccc].data;
+      this.sy = nsy;
     },
     tijiao() {
       const s = ipcRenderer.sendSync("tijiaosy", [this.sy, this.kz]);
