@@ -37,7 +37,15 @@
                         required
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12">
+                    <v-col cols="12" md="6">
+                      <v-text-field
+                        v-model="weici"
+                        label="位次"
+                        :rules="scoreRules"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
                       <v-select
                         v-model="select"
                         :items="itemsby"
@@ -164,6 +172,7 @@ export default {
       name: "",
       select: "",
       score: "",
+      weici:"",
       itemsby: ["理科", "文科"],
       e1: 1,
 
@@ -204,7 +213,7 @@ export default {
       const result = ipcRenderer.sendSync("student_status", [
         this.name,
         this.score,
-        0,
+        this.weici,
         this.select
       ]);
     },

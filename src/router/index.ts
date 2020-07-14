@@ -12,7 +12,7 @@ Vue.use(VueRouter)
   {
     path: '/',
     name: 'Home',
-    component: Test
+    component: SelectUniversityBaseScore
   },
   {
     path: '/SelectUniversityBaseScore',
