@@ -17,8 +17,7 @@
           </v-stepper-header>
           <v-stepper-items>
             <v-stepper-content step="1" style="background-color: rgba(0, 0, 0, 0);">
-              <v-form ref="form"
-              v-model="valid">
+              <v-form ref="form" v-model="valid">
                 <v-container>
                   <v-row>
                     <v-col cols="12" md="6">
@@ -60,32 +59,31 @@
                     <v-spacer></v-spacer>
                     <span class="title">Hts</span>
                   </v-card-title>
-
                   <v-card-text>根据你的喜好在类别下进行选择（多选），我们可以进一步的删选相关大学。</v-card-text>
 
                   <v-divider class="mx-4"></v-divider>
-
-                  <v-card-text v-for="itemq in sy" :key="itemq">
-                    <span v-if="itemq.kz === 1" class="subheading">{{items[itemq.bh]}}</span>
-
-                    <v-chip-group
-                      v-if="itemq.kz === 1"
-                      active-class="deep-purple--text text--accent-4"
-                      column
-                    >
-                      <v-chip
-                        @click="(()=>{itemq.xx = []; itemq.xx.push('全选'); suoyin(itemq.bh);})"
-                        active-class="primary--text"
-                      >全选</v-chip>
-                      <v-chip
-                        active
-                        v-for="ee in itemq.data"
-                        :input="ee"
-                        @click="(()=>{if(itemq.xx[0]=='全选'){itemq.xx.splice(0,1);}; itemq.xx.push(ee); suoyin(itemq.bh);})"
-                        :key="ee"
-                      >{{ ee }}</v-chip>
-                    </v-chip-group>
-                  </v-card-text>
+                  <div v-for="itemq in sy" :key="itemq">
+                    <v-card-text v-if="itemq.kz ===1">
+                      <span v-if="itemq.kz === 1" class="subheading">{{items[itemq.bh]}}</span>
+                      <v-chip-group
+                        v-if="itemq.kz === 1"
+                        active-class="deep-purple--text text--accent-4"
+                        column
+                      >
+                        <v-chip
+                          @click="(()=>{itemq.xx = []; itemq.xx.push('全选'); suoyin(itemq.bh);})"
+                          active-class="primary--text"
+                        >全选</v-chip>
+                        <v-chip
+                          active
+                          v-for="ee in itemq.data"
+                          :input="ee"
+                          @click="(()=>{if(itemq.xx[0]=='全选'){itemq.xx.splice(0,1);}; itemq.xx.push(ee); suoyin(itemq.bh);})"
+                          :key="ee"
+                        >{{ ee }}</v-chip>
+                      </v-chip-group>
+                    </v-card-text>
+                  </div>
                 </v-container>
                 <v-btn fab color="cyan accent-2" bottom right fixed @click="sheet = !sheet">预览</v-btn>
               </v-card>
@@ -96,7 +94,7 @@
               <v-simple-table
                 class="m-10 mx-auto"
                 id="example-2"
-                :height="400"
+                :height="430"
                 style="background-color: rgba(0, 0, 0, 0.1);"
               >
                 <tbody>
@@ -198,7 +196,7 @@ export default {
         v => !!v || "分数为必须字段",
         v => v.length <= 750 || v.length > 0 || "分数必须大于0，小于750分"
       ],
-      valid: true,
+      valid: true
     };
   },
   methods: {
