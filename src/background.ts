@@ -315,6 +315,7 @@ function sjhq2(n: string, f: number, w: number, wl: string): number {
   const xdata: Array<Array<any>> = [];
   for (x in sfsy) {
     for (i = 0; i < xq[sfsy[x]].length; i++) {
+      
       let s985 = "-";
       let city = "-";
       let syl = "-";
@@ -352,6 +353,19 @@ function sjhq2(n: string, f: number, w: number, wl: string): number {
   for (x in sfsy) {
     for (i = 0; i < zylist[sfsy[x]].length; i++) {
       ssy = zyfen[zylist[sfsy[x]][i]];
+      if(w>0){
+        if(ssy[6]<w-2000){
+          continue;
+        }
+      }else{
+        let ee=parseInt(ssy[3]);
+        if(!isNaN(ee) && ee){
+          if (ee > fenshu-0+ up) {
+            continue;
+          }
+        }
+      }
+      
       zydata.push([sfsy[x], ssy[1], ssy[8], ssy[5], ssy[4], ssy[3], ssy[6], ssy[2], ssy[7], ssy[10], ssy[11], ssy[12], schinf[sfsy[x]]["sheng"]]);
     }
   }
@@ -364,7 +378,7 @@ ipcMain.on("getzy", (event, arg) => {
   let lszy: Array<Array<any>> = [];
   for (let s = 0; s < zybiaos.length; s++) {
     for (let m = 0; m < zybiaos[s].length; m++) {
-      if (zybiaos[s][m] == "") {
+      if (zybiaos[s][m] == "" || zybiaos[s][m] == " " || zybiaos[s][m] == "-" || /^\s*$/.test(zybiaos[s][m])) {
         zybiaos[s][m] = "--";
       }
     }
