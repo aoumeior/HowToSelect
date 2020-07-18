@@ -5,7 +5,7 @@
       permanent
       router
       v-model="drawer"
-      color="#26c6da"
+      color="#e2e1e4"
       :expand-on-hover="expandOnHover"
       :mini-variant="miniVariant"
       :right="right"
@@ -65,7 +65,7 @@ export default {
         { title: "学校专业评估", icon: "mdi-image", router: "sousuo" },
         // { title: "分数筛选（后续删除）", icon: "mdi-image", router: "tablesel" },
         {
-          title: "分数选择大学",
+          title: "分数/位次选择大学",
           icon: "mdi-image",
           router: "SelectUniversityBaseScore"
         },
@@ -79,10 +79,11 @@ export default {
       expandOnHover: false,
       background: false,
       note: {
-        backgroundImage: "url('https://cdn.vuetifyjs.com/images/parallax/material.jpg')",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "25px auto",
-        marginTop: "0px"
+        // backgroundImage: "url('https://cdn.vuetifyjs.com/images/parallax/material.jpg')",
+        // backgroundRepeat: "no-repeat",
+        // backgroundPosition: "25px auto",
+        // marginTop: "0px"
+        background: "#e2e1e4"
       }
     };
   },

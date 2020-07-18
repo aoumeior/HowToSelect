@@ -11,21 +11,20 @@
         <v-text-field v-model="inp" label="高校名称" :rules="rules" hide-details="auto"></v-text-field>
       </v-col>
       <v-col>
-        <v-btn color="primary" @click="sub">搜索</v-btn>
+        <v-btn class="grey lighten-1" @click="sub">搜索</v-btn>
       </v-col>
     </v-row>
 
     <v-sheet class="mt-5 mx-auto" elevation="6">
       <v-tabs
-        background-color="cyan"
-        dark
+        background-color="grey lighten-3"
         next-icon="mdi-arrow-right-bold-box-outline"
         prev-icon="mdi-arrow-left-bold-box-outline"
-        show-arrows
+
       >
-        <v-tabs-slider color="yellow"></v-tabs-slider>
+        <v-tabs-slider color="white"></v-tabs-slider>
         <v-tab
-          style="background-color: rgba(0, 0, 0, 0.);"
+         
           v-for="item in items"
           :key="item.message"
           @click="liclic(item.message)"
@@ -34,11 +33,9 @@
     </v-sheet>
 
     <v-simple-table
-      class="m-10 mx-auto"
+      class="mt-1 mx-auto grey lighten-4"
       v-if="sitems.length >= 1"
       id="example-2"
-      :height="400"
-      style="background-color: rgba(0, 0, 0, 0.1);"
     >
       <template v-slot:default>
         <tbody>

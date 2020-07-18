@@ -19,6 +19,13 @@
             <v-stepper-content step="1" style="background-color: rgba(0, 0, 0, 0);">
               <v-form ref="form" v-model="valid">
                 <v-container>
+                  <v-card-title>
+                    <h4 class="display-8">输入你的个人信息</h4>
+                    <v-spacer></v-spacer>
+                    <span class="title">Hts</span>
+                  </v-card-title>
+                  <v-card-text>输入你的姓名、分数、位次、文理，我们将为你展示与你最匹配的学校。</v-card-text>
+                  <v-card-text>输入完成后，点击继续，进入下一步。</v-card-text>
                   <v-row>
                     <v-col cols="12" md="6">
                       <v-text-field
@@ -41,7 +48,6 @@
                       <v-text-field
                         v-model="weici"
                         label="位次"
-                        :rules="scoreRules"
                         required
                       ></v-text-field>
                     </v-col>
@@ -60,7 +66,7 @@
               <v-btn color="primary" @click="e1 = 2;  Submit(); gets1();" :disabled="!valid">继续</v-btn>
             </v-stepper-content>
             <v-stepper-content step="2">
-              <v-card :outlined="true" class="mb-12 blue-grey lighten-5">
+              <v-card :outlined="false" class="mb-12" color="#e2e1e4">
                 <v-container>
                   <v-card-title>
                     <h2 class="display-1">根据你的选择进行筛选：</h2>
@@ -68,7 +74,7 @@
                     <span class="title">Hts</span>
                   </v-card-title>
                   <v-card-text>根据你的喜好在类别下进行选择（多选），我们可以进一步的删选相关大学。</v-card-text>
-
+                  <v-card-text>点击右下角预览按钮，预览所选学校。</v-card-text>
                   <v-divider class="mx-4"></v-divider>
                   <div v-for="itemq in sy" :key="itemq">
                     <v-card-text v-if="itemq.kz ===1">
@@ -198,7 +204,7 @@ export default {
 
       nameRules: [
         v => !!v || "姓名为必须字段",
-        v => v.length <= 3 || "姓名必须超过三个字符"
+        v => v.length >= 2 || "姓名必须超过两个字符"
       ],
 
       scoreRules: [
