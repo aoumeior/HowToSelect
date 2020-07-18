@@ -363,6 +363,20 @@ function sjhq2(n: string, f: number, w: number, wl: string): number {
           if (ee > fenshu-0+ up) {
             continue;
           }
+        }else{
+          let ee=parseInt(ssy[4]);
+          if(!isNaN(ee) && ee){
+            if (ee > fenshu-0+20+ up) {
+              continue;
+            }
+          }else{
+            let ee=parseInt(ssy[5]);
+            if(!isNaN(ee) && ee){
+              if (ee > fenshu-0+40+ up) {
+                continue;
+              }
+            }
+          }
         }
       }
       
